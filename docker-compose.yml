@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql1
+    environment:
+      - MYSQL_ROOT_PASSWORD=Test@123
+      - MYSQL_DATABASE=chatapp
+    volumes:
+              - /mnt/d/Az400/My_projects/Goldencat-ChatApp/mysql-data/chatapp:/path/in/container:z
+    networks:
+      - chatapp
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      # test: ["CMD", "mysqladmin", "ping", "-h","localhost", "-uroot","-pTest@123"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  mainapp:
+    image: shrij34/chatapp:latest
+    build:
+      context: .
+
+    container_name: chatapp1
+    environment:
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/chatapp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_PASSWORD=Test@123
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - chatapp
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+networks:
+  chatapp:
