@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: chatapp
+spec:
+  containers:
+  - name: chatapp
+    image: shrij34/chatapp:v1
+    ports:
+    - containerPort: 8080

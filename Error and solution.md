@@ -52,3 +52,21 @@ This error typically occurs when Docker is unable to connect to the Docker daemo
 
 
 }
+
+4. error 
+docker ps Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+
+ check for 
+Check Docker Permissions
+If the Docker daemon is running but you're still getting this error, it could be a permission issue with accessing Docker as a non-root user.
+Add your user to the docker group to allow non-root users to interact with Docker:
+sudo usermod -aG docker $USER
+Log out and log back in, or run the following command to refresh the group membership:
+newgrp docker
+Then try running docker ps again.
+sudo systemctl restart docker
+
+nothing works reboot wsl 
+wsl --shutdown
+wsl
+docker ps

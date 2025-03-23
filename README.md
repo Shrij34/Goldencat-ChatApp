@@ -142,3 +142,80 @@ kubectl config set-context --current --cluster=kind
 
 
 now lets create namespac for logical group for nodes to be in one namespace(room)
+
+
+Check the current context for kubectl:
+
+bash
+Copy
+Edit
+kubectl config current-context
+If it’s not set to your Kind cluster, switch to the correct context:
+
+bash
+Copy
+Edit
+kubectl config use-context kind-kind
+You can list all contexts available:
+
+bash
+Copy
+Edit
+kubectl config get-contexts
+2. Check the Nodes
+Once the context is set correctly, check if you can get information about the nodes:
+
+bash
+Copy
+Edit
+kubectl get nodes
+If this works, it means kubectl can connect to your Kind cluster.
+
+create name space
+kubectl apply -f namespace.yaml 
+
+shrij@Shrij:/mnt/d/Az400/My_projects/Goldencat-ChatApp/k8s_kind$ kubectl apply -f namespace.yaml 
+namespace/dev created
+shrij@Shrij:/mnt/d/Az400/My_projects/Goldencat-ChatApp/k8s_kind$ kubectl apply -f 01_mysql-deployment.yaml 
+deployment.apps/mysql created
+shrij@Shrij:/mnt/d/Az400/My_projects/Goldencat-ChatApp/k8s_kind$ kubectl apply -f 02_mysql_service.yaml 
+service/mysql-service created
+shrij@Shrij:/mnt/d/Az400/My_projects/Goldencat-ChatApp/k8s_kind$ kubectl apply -f 03_chatapp_Deployment.yaml 
+deployment.apps/nginx-deployment created
+shrij@Shrij:/mnt/d/Az400/My_projects/Goldencat-ChatApp/k8s_kind$ kubectl apply -f 04_chatapp_service.yaml 
+service/chatapp created
+shrij@Shrij:/mnt/d/Az400/My_projects/Goldencat-ChatApp/k8s_kind$ kubectl get deployments
+No resources found in default namespace.
+shrij@Shrij:/mnt/d/Az400/My_projects/Goldencat-ChatApp/k8s_kind$ kubectl get deployments -n dev
+
+Steps to Access Your Service:
+Find the Service Name: You need the exact name of your service in the dev namespace. If you don't know it, you can list the services:
+
+bash
+Copy
+Edit
+kubectl get svc -n dev
+This should show you the service you created. For example, let's assume the service is named chatapp.
+
+Port Forward the Service: Once you have the service name, you can port-forward it to your local machine. This will allow you to access it via localhost on the specified port.
+
+For example, if your service is chatapp and it exposes port 8080, you can use:
+
+bash
+Copy
+Edit
+kubectl port-forward svc/chatapp 8080:8080 -n dev
+This will forward port 8080 from the chatapp service to your local port 8080.
+
+Access the Application: Now, you can open your browser and access the application using:
+
+arduino
+Copy
+Edit
+http://localhost:8080
+Summary:
+Use kubectl get svc -n dev to check your service's name.
+
+Use kubectl port-forward svc/<service-name> <local-port>:<service-port> -n dev to forward the port.
+
+Access the app at http://localhost:<local-port>.
