@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: chatapp
-  namespace: dev  
+  namespace: dev
   labels:
     app: chatapp
 spec:
@@ -27,3 +27,41 @@ spec:
           value: "jdbc:mysql://mysql-service:3306/chatapp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
         - name: SPRING_DATASOURCE_PASSWORD
           value: "Test@123"
+        volumeMounts:
+        - name: chatapp-storage
+          mountPath: /var/lib/mysql  # Assuming MySQL data will be stored here
+      volumes:
+      - name: chatapp-storage
+        persistentVolumeClaim:
+          claimName: chatapp-pvc  # PVC reference
+
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: chatapp
+#   namespace: dev  
+#   labels:
+#     app: chatapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: chatapp
+#   template:
+#     metadata:
+#       labels:
+#         app: chatapp
+#     spec:
+#       containers:
+#       - name: chatapp
+#         image: shrij34/chatapp:v1
+#         ports:
+#         - containerPort: 8080
+#         env:
+#         - name: SPRING_DATASOURCE_USERNAME
+#           value: "root"
+#         - name: SPRING_DATASOURCE_URL
+#           value: "jdbc:mysql://mysql-service:3306/chatapp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+#         - name: SPRING_DATASOURCE_PASSWORD
+#           value: "Test@123"

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: chatapp-pvc
+  namespace: dev
+spec:
+  accessModes:
+    - ReadWriteOnce  # Matches PV access mode
+  resources:
+    requests:
+      storage: 10Gi  # Match or smaller than the PV's size
+  storageClassName: standard
