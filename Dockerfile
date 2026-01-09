@@ -2,8 +2,7 @@
 #----------------Stage 1------------------
 
 # Import docker image with maven installed
-FROM maven:3.8.3-openjdk-17 as builder 
-
+FROM maven:3.8.8-eclipse-temurin-17 AS builder
 
 # Add labels to the image to filter out if we have multiple application running
 LABEL app=chatapp
@@ -35,4 +34,5 @@ COPY --from=builder /src/target/*.jar /src/target/chatapp.jar
 EXPOSE 8080
 
 # Start the application
+
 ENTRYPOINT ["java", "-jar", "/src/target/chatapp.jar"]
