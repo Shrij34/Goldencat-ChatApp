@@ -10,7 +10,7 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - /mnt/d/Az400/My_projects/Goldencat-ChatApp/mysql-data/chatapp:/var/lib/mysql:z
+      - /mnt/d/Az400/My_projects/Goldencat-ChatApp/mysql-data/chatapp1:/var/lib/mysql:z
     networks:
       - chatapp
     healthcheck:
@@ -95,4 +95,5 @@ networks:
 # networks:
 
 #   chatapp:
+
 
