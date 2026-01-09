@@ -21,7 +21,7 @@ RUN mvn clean install -DskipTests=true
 #--------------------------------------
 
 # Import small size java image
-FROM openjdk:17-alpine as deployer
+FROM eclipse-temurin:17-jre-alpine as deployer
 
 # Install curl
 RUN apk add --no-cache curl
@@ -36,3 +36,4 @@ EXPOSE 8080
 # Start the application
 
 ENTRYPOINT ["java", "-jar", "/src/target/chatapp.jar"]
+
