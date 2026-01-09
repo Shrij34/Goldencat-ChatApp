@@ -2,23 +2,22 @@ version: "3.8"
 
 services:
   mysql:
-    image: mysql:latest
+    image: mysql:8.0.36
     container_name: mysql1
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - /mnt/d/Az400/My_projects/Goldencat-ChatApp/mysql-data/chatapp1:/var/lib/mysql:z
+      - mysql_data:/var/lib/mysql
     networks:
       - chatapp
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
-      retries: 3
-      start_period: 30s
+      retries: 5
 
   mainapp:
     image: shrij34/chatapp:latest
@@ -26,9 +25,9 @@ services:
       context: .
     container_name: chatapp1
     environment:
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     ports:
       - "9090:8080"
     depends_on:
@@ -37,15 +36,63 @@ services:
     networks:
       - chatapp
     restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+
+volumes:
+  mysql_data:
 
 networks:
   chatapp:
+
+
+
+# version: "3.8"
+
+# services:
+#   mysql:
+#     image: mysql:8.0.36
+#     container_name: mysql1
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+#       - MYSQL_DATABASE=${MYSQL_DATABASE}
+#       - MYSQL_USER=${MYSQL_USER}
+#       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+#     networks:
+#       - chatapp
+#     healthcheck:
+#       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 3
+#       start_period: 30s
+
+#   mainapp:
+#     image: shrij34/chatapp:latest
+#     build:
+#       context: .
+#     container_name: chatapp1
+#     environment:
+#       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+#       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+#       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+#     ports:
+#       - "9090:8080"
+#     depends_on:
+#       mysql:
+#         condition: service_healthy
+#     networks:
+#       - chatapp
+#     restart: always
+#     healthcheck:
+#       test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+#       start_period: 30s
+
+# networks:
+#   chatapp:
 
 # version: "3.8"
 # services:
@@ -95,5 +142,6 @@ networks:
 # networks:
 
 #   chatapp:
+
 
 
