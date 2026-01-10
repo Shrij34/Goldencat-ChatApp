@@ -1,0 +1,142 @@
+pipeline {
+    agent any
+
+    environment {
+        // App
+        APP_IMAGE       = "shrij34/chatapp:latest"
+
+        // Git
+        GIT_REPO        = "https://github.com/Shrij34/Goldencat-ChatApp.git"
+        GIT_BRANCH      = "end"
+
+        // MySQL (non-secret)
+        MYSQL_DATABASE  = "chatapp"
+        MYSQL_USER      = "chatuser"
+    }
+
+    stages {
+
+        stage('Pre-check Docker') {
+            steps {
+                bat 'docker --version'
+                bat 'docker-compose --version'
+            }
+        }
+
+        stage('Cleanup Old Containers') {
+            steps {
+                echo "Stopping containers (DB volume preserved unless -v is used)"
+                bat 'docker-compose down'
+            }
+        }
+
+        stage('Clone Repository') {
+            steps {
+                git branch: "${GIT_BRANCH}",
+                    url: "${GIT_REPO}",
+                    credentialsId: 'GitHub-token'
+            }
+        }
+
+        stage('Build & Deploy with Docker Compose') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'mysql-root-pass-id', variable: 'MYSQL_ROOT_PASSWORD'),
+                    string(credentialsId: 'mysql-user-pass-id', variable: 'MYSQL_PASSWORD')
+                ]) {
+                    bat """
+                    set MYSQL_ROOT_PASSWORD=%MYSQL_ROOT_PASSWORD%
+                    set MYSQL_DATABASE=${MYSQL_DATABASE}
+                    set MYSQL_USER=${MYSQL_USER}
+                    set MYSQL_PASSWORD=%MYSQL_PASSWORD%
+
+                    docker-compose pull
+                    docker-compose build
+                    docker-compose up -d
+                    """
+                }
+            }
+        }
+
+        stage('Verify Containers') {
+            steps {
+                bat 'docker ps'
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                echo "Waiting for application health..."
+                bat 'ping 127.0.0.1 -n 20 > nul'
+                bat 'curl http://localhost:9090/actuator/health'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Deployment successful!"
+        }
+        failure {
+            echo "❌ Deployment failed!"
+            bat 'docker-compose logs --tail=50 mysql mainapp'
+        }
+        always {
+            echo "Pipeline finished"
+        }
+    }
+}
+
+
+// pipeline {
+//     agent any
+
+//     environment {
+//         APP_IMAGE = "chatapp:latest"
+//         GIT_REPO = "https://github.com/Shrij34/Goldencat-ChatApp.git"
+//         GIT_BRANCH = "end"
+//         MYSQL_DATABASE = "chatapp"
+//         MYSQL_USER = "chatuser"   // dedicated app user, not root
+//     }
+    
+//     stages {
+//         stage('Cleanup Containers') {
+//             steps {
+//                 bat "docker-compose down -v"
+//             }
+//         }
+
+//         stage('Clone Repo') {
+//             steps {
+//                 git branch: "${env.GIT_BRANCH}", 
+//                     url: "${env.GIT_REPO}", 
+//                     credentialsId: 'GitHub-token'
+//             }
+//         }
+
+//         stage('Build Docker Image') {
+//             steps {
+//                 script {
+//                     docker.build("${env.APP_IMAGE}")
+//                 }
+//             }
+//         }
+
+//         stage('Run Docker Compose') {
+//             steps {
+//                 withCredentials([
+//                     string(credentialsId: 'mysql-root-pass-id', variable: 'MYSQL_ROOT_PASSWORD'),
+//                     string(credentialsId: 'mysql-user-pass-id', variable: 'MYSQL_PASSWORD')
+//                 ]) {
+//                     bat """
+//                     set MYSQL_ROOT_PASSWORD=%MYSQL_ROOT_PASSWORD%
+//                     set MYSQL_DATABASE=${env.MYSQL_DATABASE}
+//                     set MYSQL_USER=${env.MYSQL_USER}
+//                     set MYSQL_PASSWORD=%MYSQL_PASSWORD%
+//                     docker-compose up -d --build
+//                     """
+//                 }
+//             }
+//         }
+//     }
+// }
