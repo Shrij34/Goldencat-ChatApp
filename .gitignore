@@ -19,6 +19,12 @@ templates/deployment.yaml
 *.iml
 *.ipr
 
+*.pem
+*.key
+id_rsa*
+*.p12
+
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

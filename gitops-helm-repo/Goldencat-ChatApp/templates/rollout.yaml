@@ -10,8 +10,8 @@ spec:
 
   strategy:
     blueGreen:
-      activeService: {{ .Values.appName }}-active
-      previewService: {{ .Values.appName }}-preview
+      activeService: "{{ .Values.appName }}-active"
+      previewService: "{{ .Values.appName }}-preview"
       autoPromotionEnabled: true
 
   template:
