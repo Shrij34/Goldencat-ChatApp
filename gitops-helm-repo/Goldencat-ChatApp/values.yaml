@@ -4,7 +4,7 @@ replicaCount: 2   # choose 1 or 2, not both
 
 image:
   repository: shrij34/chatapp
-  tag: "46"       # use either 'latest' or a specific tag like 46
+  tag: "49"
   pullPolicy: Always
 
 service:
