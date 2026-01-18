@@ -1,11 +1,33 @@
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: goldenapp
+# spec:
+#   type: {{ .Values.service.type }}
+#   selector:
+#     app: goldenapp
+#   ports:
+#     - port: {{ .Values.service.port }}
+#       targetPort: {{ .Values.containerPort }}
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: goldenapp
+  name: {{ .Values.appName }}
 spec:
-  type: {{ .Values.service.type }}
   selector:
-    app: goldenapp
+    app: {{ .Values.appName }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: 80
+      targetPort: {{ .Values.containerPort }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appName }}
+  selector:
+    app: {{ .Values.appName }}
+  ports:
+    - port: 80
       targetPort: {{ .Values.containerPort }}

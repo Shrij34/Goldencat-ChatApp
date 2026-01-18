@@ -1,3 +1,6 @@
+appName: goldenapp
+
+
 image:
   repository: shrij34/chatapp
   tag: latest
@@ -8,7 +11,7 @@ service:
   port: 8080
 
 containerPort: 8080
-replicaCount: 1
+replicaCount: 2
 
 database:
   url: jdbc:mysql://mysql:3306/chatapp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
