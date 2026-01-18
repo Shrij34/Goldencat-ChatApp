@@ -1,0 +1,11 @@
+image:
+  repository: shrij34/goldencat-chatapp
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8080
+
+containerPort: 8080
+replicaCount: 1
