@@ -1,19 +1,7 @@
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: goldenapp
-# spec:
-#   type: {{ .Values.service.type }}
-#   selector:
-#     app: goldenapp
-#   ports:
-#     - port: {{ .Values.service.port }}
-#       targetPort: {{ .Values.containerPort }}
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.appName }}
+  name: {{ .Values.appName }}-active
 spec:
   selector:
     app: {{ .Values.appName }}
@@ -25,7 +13,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.appName }}
+  name: {{ .Values.appName }}-preview
+spec:
   selector:
     app: {{ .Values.appName }}
   ports:

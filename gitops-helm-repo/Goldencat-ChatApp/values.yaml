@@ -1,9 +1,10 @@
 appName: goldenapp
 
+replicaCount: 2   # choose 1 or 2, not both
 
 image:
   repository: shrij34/chatapp
-  tag: 46
+  tag: "46"       # use either 'latest' or a specific tag like 46
   pullPolicy: Always
 
 service:
@@ -11,9 +12,9 @@ service:
   port: 8080
 
 containerPort: 8080
-replicaCount: 2
+
 
 database:
   url: jdbc:mysql://mysql:3306/chatapp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
   username: chatuser
-  password: chatpass
+  password: chatpass   # pick one password, not both

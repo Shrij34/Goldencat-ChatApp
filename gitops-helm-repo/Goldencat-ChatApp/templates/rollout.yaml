@@ -4,21 +4,31 @@ metadata:
   name: {{ .Values.appName }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  strategy:
-    blueGreen:
-      activeService: {{ .Values.appName }}
-      previewService: {{ .Values.appName }}
-      autoPromotionEnabled: true
   selector:
     matchLabels:
       app: {{ .Values.appName }}
+
+  strategy:
+    blueGreen:
+      activeService: {{ .Values.appName }}-active
+      previewService: {{ .Values.appName }}-preview
+      autoPromotionEnabled: true
+
   template:
     metadata:
       labels:
         app: {{ .Values.appName }}
     spec:
       containers:
-      - name: {{ .Values.appName }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        ports:
-        - containerPort: {{ .Values.containerPort }}
+        - name: {{ .Values.appName }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: {{ .Values.database.url | quote }}
+            - name: SPRING_DATASOURCE_USERNAME
+              value: {{ .Values.database.username | quote }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: {{ .Values.database.password | quote }}
