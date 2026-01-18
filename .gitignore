@@ -24,6 +24,11 @@ templates/deployment.yaml
 id_rsa*
 *.p12
 
+terraform.tfstate
+terraform.tfstate.*
+.terraform/
+
+
 
 ### NetBeans ###
 /nbproject/private/
