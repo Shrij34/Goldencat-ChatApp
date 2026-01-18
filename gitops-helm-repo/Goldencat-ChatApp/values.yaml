@@ -3,7 +3,7 @@ appName: goldenapp
 
 image:
   repository: shrij34/chatapp
-  tag: latest
+  tag: 46
   pullPolicy: Always
 
 service:
