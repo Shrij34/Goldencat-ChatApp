@@ -1,6 +1,6 @@
 image:
   repository: shrij34/chatapp
-  tag: 44
+  tag: 45
   pullPolicy: Always
 
 service:
