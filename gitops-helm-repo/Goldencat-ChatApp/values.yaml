@@ -1,5 +1,5 @@
 image:
-  repository: shrij34/goldencat-chatapp
+  repository: shrij34/goldencat-chatapp:latest
   tag: latest
   pullPolicy: Always
 
